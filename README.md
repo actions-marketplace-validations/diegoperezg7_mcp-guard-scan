@@ -5,6 +5,7 @@
 [![GitHub Marketplace](https://img.shields.io/badge/Marketplace-mcp--guard-c026d3?logo=github)](https://github.com/marketplace/actions/mcp-guard-mcp-security-scan)
 [![npm](https://img.shields.io/npm/v/mcp-guard-scan?color=c026d3)](https://www.npmjs.com/package/mcp-guard-scan)
 [![MCP Registry](https://img.shields.io/badge/MCP_Registry-io.github.diegoperezg7%2Fmcp--guard--scan-c026d3)](https://registry.modelcontextprotocol.io/v0/servers?search=io.github.diegoperezg7/mcp-guard-scan)
+[![Glama score](https://glama.ai/mcp/servers/diegoperezg7/mcp-guard-scan/badges/score.svg)](https://glama.ai/mcp/servers/diegoperezg7/mcp-guard-scan)
 [![Node](https://img.shields.io/badge/node-%E2%89%A522-43853d?logo=node.js&logoColor=white)](.nvmrc)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178c6?logo=typescript&logoColor=white)](tsconfig.json)
 [![MCP SDK](https://img.shields.io/badge/MCP_SDK-1.32-c026d3)](https://github.com/modelcontextprotocol/typescript-sdk)
