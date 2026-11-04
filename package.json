@@ -1,6 +1,6 @@
 {
   "name": "mcp-guard-scan",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "mcpName": "io.github.diegoperezg7/mcp-guard-scan",
   "description": "Security scanner for MCP servers, as a CLI, a GitHub Action and an MCP server: tool poisoning, shadowing, excessive permissions, leaked secrets and transport flaws, with SARIF output for CI.",
   "type": "module",

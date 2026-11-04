@@ -4,6 +4,13 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [1.1.1] - 2026-11-04
+
+### Changed
+
+- README: Glama score badge, and the published package page now matches the repository.
+- Releases publish to npm through trusted publishing (OIDC with provenance) instead of a token.
+
 ## [1.1.0] - 2026-11-04
 
 ### Added
@@ -60,7 +67,8 @@ First public release.
 
 - Licensed under the Apache License 2.0.
 
-[Unreleased]: https://github.com/diegoperezg7/mcp-guard-scan/compare/v1.1.0...HEAD
+[Unreleased]: https://github.com/diegoperezg7/mcp-guard-scan/compare/v1.1.1...HEAD
+[1.1.1]: https://github.com/diegoperezg7/mcp-guard-scan/compare/v1.1.0...v1.1.1
 [1.1.0]: https://github.com/diegoperezg7/mcp-guard-scan/compare/v1.0.1...v1.1.0
 [1.0.1]: https://github.com/diegoperezg7/mcp-guard-scan/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/diegoperezg7/mcp-guard-scan/releases/tag/v1.0.0

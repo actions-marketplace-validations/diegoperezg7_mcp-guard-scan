@@ -40685,7 +40685,7 @@ var logger = (0, import_pino.default)(
 );
 
 // src/shared/version.ts
-var VERSION = "1.1.0";
+var VERSION = "1.1.1";
 
 // src/core/httpChecks.ts
 import { request as httpRequest } from "http";
