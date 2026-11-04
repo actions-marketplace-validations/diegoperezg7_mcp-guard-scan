@@ -36,7 +36,15 @@ jobs:
       - run: npm run check
       - run: node scripts/check-versions.mjs "${GITHUB_REF_NAME#v}"
 
-      - run: npm publish --access public
+      # The first version of a package is published by hand (trusted publishing needs the
+      # package to exist), so a version already on npm is skipped, not an error.
+      - name: Publish to npm
+        run: |
+          if npm view "$(node -p 'require("./package.json").name')@${GITHUB_REF_NAME#v}" version >/dev/null 2>&1; then
+            echo "Already on npm, skipping"
+          else
+            npm publish --access public
+          fi
 
       - name: Publish to the MCP Registry
         run: |
