@@ -8,8 +8,8 @@
     "node": ">=22"
   },
   "bin": {
-    "mcp-guard": "./dist/cli/index.js",
-    "mcp-guard-scan": "./dist/cli/index.js"
+    "mcp-guard": "dist/cli/index.js",
+    "mcp-guard-scan": "dist/cli/index.js"
   },
   "main": "./dist/core/index.js",
   "types": "./dist/core/index.d.ts",
