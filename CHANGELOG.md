@@ -4,6 +4,30 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [1.1.0] - 2026-11-04
+
+### Added
+
+- `mcp-guard serve`: an MCP server on stdio, so an agent can check a server before you install it.
+  Tools: `scan_tools_export` (static, no network or processes), `scan_server` (public https
+  endpoints only; hosts that resolve to loopback, private or link-local addresses are refused
+  unless `MCP_GUARD_ALLOW_PRIVATE_NETWORK=1`), `list_rules` and `explain_rule`.
+  `MCP_GUARD_ALLOW_STDIO=1` adds `scan_stdio_server`. In its default configuration the server
+  passes its own rules; with stdio enabled it reports MCPG-022 on itself, as it should.
+- Published to npm as `mcp-guard-scan` (the `mcp-guard` name belongs to another package), with
+  `mcp-guard-scan` as a second command name so `npx mcp-guard-scan` works, and to the MCP
+  Registry as `io.github.diegoperezg7/mcp-guard-scan`.
+
+### Changed
+
+- The repository is now `diegoperezg7/mcp-guard-scan`: workflows must use
+  `uses: diegoperezg7/mcp-guard-scan@v1` (GitHub does not redirect actions after a rename).
+- `parseExport` in the library API: scan an export that is already in memory.
+
+### Unchanged
+
+- `scan`, `rules` and the GitHub Action behave as in 1.0.1.
+
 ## [1.0.1] - 2026-10-28
 
 ### Fixed
@@ -36,5 +60,7 @@ First public release.
 
 - Licensed under the Apache License 2.0.
 
-[Unreleased]: https://github.com/diegoperezg7/mcp-guard/compare/v1.0.0...HEAD
-[1.0.0]: https://github.com/diegoperezg7/mcp-guard/releases/tag/v1.0.0
+[Unreleased]: https://github.com/diegoperezg7/mcp-guard-scan/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/diegoperezg7/mcp-guard-scan/compare/v1.0.1...v1.1.0
+[1.0.1]: https://github.com/diegoperezg7/mcp-guard-scan/compare/v1.0.0...v1.0.1
+[1.0.0]: https://github.com/diegoperezg7/mcp-guard-scan/releases/tag/v1.0.0

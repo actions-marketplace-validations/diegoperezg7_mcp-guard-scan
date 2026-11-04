@@ -5,6 +5,7 @@ import { logger } from "../shared/logger.js";
 import { VERSION } from "../shared/version.js";
 import { buildRulesCommand } from "./commands/rules.js";
 import { buildScanCommand, EXIT, UsageError } from "./commands/scan.js";
+import { buildServeCommand } from "./commands/serve.js";
 
 const program = new Command()
   .name("mcp-guard")
@@ -15,6 +16,7 @@ const program = new Command()
 
 program.addCommand(buildScanCommand());
 program.addCommand(buildRulesCommand());
+program.addCommand(buildServeCommand());
 
 // Commander exits with 1 on usage errors, which CI would read as "findings".
 // Throw instead, so every usage error maps to 2 as documented.

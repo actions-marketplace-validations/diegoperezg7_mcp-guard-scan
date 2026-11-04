@@ -1,18 +1,22 @@
 {
-  "name": "mcp-guard",
-  "version": "1.0.1",
-  "description": "Defensive security scanner for MCP servers: tool poisoning, shadowing, excessive permissions, leaked secrets and transport flaws, with SARIF output for CI.",
+  "name": "mcp-guard-scan",
+  "version": "1.1.0",
+  "mcpName": "io.github.diegoperezg7/mcp-guard-scan",
+  "description": "Security scanner for MCP servers, as a CLI, a GitHub Action and an MCP server: tool poisoning, shadowing, excessive permissions, leaked secrets and transport flaws, with SARIF output for CI.",
   "type": "module",
   "engines": {
     "node": ">=22"
   },
   "bin": {
-    "mcp-guard": "./dist/cli/index.js"
+    "mcp-guard": "./dist/cli/index.js",
+    "mcp-guard-scan": "./dist/cli/index.js"
   },
   "main": "./dist/core/index.js",
   "types": "./dist/core/index.d.ts",
   "files": [
     "dist",
+    "!dist/action",
+    "!dist/examples",
     "docs/rules.md",
     "README.md",
     "LICENSE",
@@ -30,7 +34,9 @@
     "check": "npm run typecheck && npm run lint && npm run format:check && npm test",
     "prepare": "tsup",
     "docs:rules": "tsx src/cli/index.ts rules --format markdown > docs/rules.md",
-    "docs:screenshots": "node docs/screenshots.mjs"
+    "docs:screenshots": "node docs/screenshots.mjs",
+    "version": "node scripts/sync-version.mjs && git add server.json src/shared/version.ts",
+    "inspect": "npx -y @modelcontextprotocol/inspector node dist/cli/index.js serve"
   },
   "keywords": [
     "mcp",
@@ -41,14 +47,24 @@
     "tool-poisoning",
     "prompt-injection",
     "scanner",
-    "ci"
+    "ci",
+    "mcp-server",
+    "mcp-security",
+    "ai-security",
+    "github-action"
   ],
   "author": "Diego Pérez",
   "license": "Apache-2.0",
-  "private": true,
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/diegoperezg7/mcp-guard.git"
+    "url": "git+https://github.com/diegoperezg7/mcp-guard-scan.git"
+  },
+  "homepage": "https://github.com/diegoperezg7/mcp-guard-scan#readme",
+  "bugs": {
+    "url": "https://github.com/diegoperezg7/mcp-guard-scan/issues"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.32.2",

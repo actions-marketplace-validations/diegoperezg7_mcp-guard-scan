@@ -6,8 +6,9 @@ compatible release; full version tags (`v1.0.0`) never move.
 
 ## 1. Prepare the release commit on `main`
 
-1. Update `version` in `package.json` and `package-lock.json`, and `VERSION` in
-   `src/shared/version.ts`.
+1. Run `npm version <patch|minor|major> --no-git-tag-version`. It updates `package.json` and
+   `package-lock.json`, and the `version` script copies the number into `server.json` and
+   `src/shared/version.ts` (`node scripts/check-versions.mjs` confirms they agree).
 2. Add the version and date to `CHANGELOG.md`.
 3. Rebuild and check:
 
@@ -34,6 +35,12 @@ git push origin v1 --force
 
 Only `v1` is ever force-pushed. A breaking change to inputs, outputs or behaviour starts `v2`.
 
+Pushing the full version tag runs [release.yml](../.github/workflows/release.yml): it checks
+that the tag matches every version file, publishes `mcp-guard-scan` to npm with
+provenance through trusted publishing (configured on npmjs.com for this repository, workflow
+`release.yml`, environment `release`) and `server.json` to the MCP Registry through GitHub OIDC.
+Glama and the other MCP directories pick the new version up from the registry and the repository.
+
 ## 3. Create the GitHub release and publish to the Marketplace
 
 1. On GitHub, open **Releases > Draft a new release** and choose the tag `v1.0.0`.
@@ -50,6 +57,9 @@ only available in the web form for the first publication.
 
 ## 4. Verify
 
+- `npx mcp-guard-scan@<version> --version` prints the new version, and
+  `https://registry.modelcontextprotocol.io/v0/servers?search=io.github.diegoperezg7/mcp-guard-scan`
+  lists it.
 - The Marketplace listing shows the name, description and branding from `action.yml`.
-- A workflow in another repository with `uses: diegoperezg7/mcp-guard@v1` runs and produces the
+- A workflow in another repository with `uses: diegoperezg7/mcp-guard-scan@v1` runs and produces the
   job summary, the outputs and the SARIF upload.

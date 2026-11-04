@@ -304,6 +304,18 @@ export async function loadExports(
       `Could not read ${path}: ${err instanceof Error ? err.message : String(err)}`,
     );
   }
+  return parseExport(raw, path, limits);
+}
+
+/**
+ * Turns an already-parsed export into inventories. `path` names the source in
+ * the report and gives the fallback server name; the MCP server passes a label.
+ */
+export function parseExport(
+  raw: unknown,
+  path: string,
+  limits: Limits = DEFAULT_LIMITS,
+): ServerInventory[] {
   const fallback = path
     .split("/")
     .pop()!

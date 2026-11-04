@@ -28,7 +28,7 @@ jobs:
       # instead of the moving v1 tag.
       - name: Scan the server
         id: mcp-guard
-        uses: diegoperezg7/mcp-guard@v1
+        uses: diegoperezg7/mcp-guard-scan@v1
         with:
           stdio: node dist/server.js
           fail-on: high

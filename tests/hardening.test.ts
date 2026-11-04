@@ -75,7 +75,7 @@ describe("report output cannot be steered by the server", () => {
     const outsideCode = md.replace(/(`+)[^`]*?\1/g, "");
     expect(outsideCode).not.toMatch(/!\[/);
     const ownLinks =
-      /\]\(https:\/\/github\.com\/diegoperezg7\/mcp-guard\/blob\/main\/docs\/rules\.md#mcpg-\d{3}\)/g;
+      /\]\(https:\/\/github\.com\/diegoperezg7\/mcp-guard-scan\/blob\/main\/docs\/rules\.md#mcpg-\d{3}\)/g;
     expect(outsideCode.replace(ownLinks, "")).not.toMatch(/\]\(/);
     // Escaped (\<img) or entity-encoded (&lt;img) is inert text; a bare tag is not.
     expect(outsideCode).not.toMatch(/(?<!\\)<(img|\/details><img)/);
@@ -94,7 +94,7 @@ describe("report output cannot be steered by the server", () => {
     for (const row of rows) expect(row.replace(/\\\|/g, "").split("|").length - 2).toBe(4);
     // Only our own rule links remain.
     for (const link of md.match(/\]\((https?:[^)]*)\)/g) ?? []) {
-      expect(link).toContain("github.com/diegoperezg7/mcp-guard/blob/main/docs/rules.md#");
+      expect(link).toContain("github.com/diegoperezg7/mcp-guard-scan/blob/main/docs/rules.md#");
     }
   });
 

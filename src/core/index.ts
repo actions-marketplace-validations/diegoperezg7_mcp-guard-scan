@@ -1,6 +1,7 @@
 export { analyze, breaches, scan, summarize, type ScanOptions, type ScanReport } from "./scan.js";
 export {
   loadExports,
+  parseExport,
   openTarget,
   splitCommand,
   inventoryFromClient,

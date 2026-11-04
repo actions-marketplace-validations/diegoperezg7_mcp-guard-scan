@@ -1,8 +1,10 @@
 <img src="docs/assets/banner.svg" alt="mcp-guard: security scanner for MCP servers" width="100%" />
 
-**Security scanner for MCP servers.** Finds tool poisoning, tool shadowing, excessive permissions, leaked secrets and weak transports before an agent connects, and fails CI when it does.
+**Security scanner for MCP servers.** Finds tool poisoning, tool shadowing, excessive permissions, leaked secrets and weak transports before an agent connects, and fails CI when it does. Runs as a CLI, a [GitHub Action](#github-action) and an [MCP server](#mcp-server) your agent can call before you install anything.
 
 [![GitHub Marketplace](https://img.shields.io/badge/Marketplace-mcp--guard-c026d3?logo=github)](https://github.com/marketplace/actions/mcp-guard-mcp-security-scan)
+[![npm](https://img.shields.io/npm/v/mcp-guard-scan?color=c026d3)](https://www.npmjs.com/package/mcp-guard-scan)
+[![MCP Registry](https://img.shields.io/badge/MCP_Registry-io.github.diegoperezg7%2Fmcp--guard--scan-c026d3)](https://registry.modelcontextprotocol.io/v0/servers?search=io.github.diegoperezg7/mcp-guard-scan)
 [![Node](https://img.shields.io/badge/node-%E2%89%A522-43853d?logo=node.js&logoColor=white)](.nvmrc)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178c6?logo=typescript&logoColor=white)](tsconfig.json)
 [![MCP SDK](https://img.shields.io/badge/MCP_SDK-1.32-c026d3)](https://github.com/modelcontextprotocol/typescript-sdk)
@@ -21,27 +23,26 @@ Code review rarely catches this, because the dangerous part is data the server r
 
 ## Quickstart
 
-In a workflow, use the [GitHub Action](#github-action). From source:
+In a workflow, use the [GitHub Action](#github-action). In an agent, add the [MCP server](#mcp-server). In a terminal (Node 22 or later):
 
 ```bash
-git clone https://github.com/diegoperezg7/mcp-guard && cd mcp-guard
-npm install && npm run build
-
 # A local stdio server
-node dist/cli/index.js scan --stdio "node path/to/server.js"
+npx mcp-guard-scan scan --stdio "node path/to/server.js"
 
 # A Streamable HTTP server, with credentials
-node dist/cli/index.js scan --http https://mcp.example.com/mcp -H "Authorization: Bearer $TOKEN"
+npx mcp-guard-scan scan --http https://mcp.example.com/mcp -H "Authorization: Bearer $TOKEN"
 
 # A tools/list result you already exported
-node dist/cli/index.js scan --json tools.json
+npx mcp-guard-scan scan --json tools.json
 
 # Several servers at once (enables the cross-server shadowing rules), SARIF to a file
-node dist/cli/index.js scan --stdio "npx -y some-mcp-server" --json other-server.json \
+npx mcp-guard-scan scan --stdio "npx -y some-mcp-server" --json other-server.json \
   --format markdown --output sarif:mcp-guard.sarif
 ```
 
-Try it on the bundled demos:
+`npm install -g mcp-guard-scan` installs the `mcp-guard` command used in the rest of this page (`mcp-guard-scan` is an alias). The package is not called `mcp-guard` because that name on npm belongs to an unrelated project.
+
+Try it on the bundled demos, from a clone (`npm install && npm run build`):
 
 ```bash
 node dist/examples/ops-toolbox.js &        # intentionally vulnerable, http://127.0.0.1:3401/mcp
@@ -157,7 +158,7 @@ steps:
   # ... build your server ...
   - name: Scan the server
     id: mcp-guard
-    uses: diegoperezg7/mcp-guard@v1
+    uses: diegoperezg7/mcp-guard-scan@v1
     with:
       stdio: node dist/server.js
       fail-on: high
@@ -204,6 +205,47 @@ At least one of `stdio`, `http` or `json` is required; several targets enable th
 To keep the browsable HTML report of every run, set `html-report: mcp-guard-report.html` and upload it with `actions/upload-artifact`.
 
 **Security.** A `stdio` line is a command the runner executes, exactly as `--stdio` in the CLI: scanning a server runs its code. `probe: true` goes further and calls its tools. Scan servers you do not trust only on ephemeral, GitHub-hosted runners (never a self-hosted runner that keeps state or credentials), give the job the minimum `permissions`, and do not expose secrets to the step. Servers are started with a minimal environment, not the runner's, so `GITHUB_TOKEN` and other variables of the job are not passed to them. This repository's [action-selftest.yml](.github/workflows/action-selftest.yml) runs the action against the demo servers on every change.
+
+## MCP server
+
+`mcp-guard serve` runs the scanner as an MCP server on stdio, so the agent can check a server's tool list before you add it, or explain a finding in a CI report.
+
+[![Install in Cursor](https://cursor.com/deeplink/mcp-install-dark.svg)](https://cursor.com/en/install-mcp?name=mcp-guard&config=eyJjb21tYW5kIjoibnB4IiwiYXJncyI6WyIteSIsIm1jcC1ndWFyZC1zY2FuIiwic2VydmUiXX0=)
+[![Install in VS Code](https://img.shields.io/badge/VS_Code-Install_server-0098FF?logo=visualstudiocode&logoColor=white)](https://insiders.vscode.dev/redirect/mcp/install?name=mcp-guard&config=%7B%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22mcp-guard-scan%22%2C%22serve%22%5D%7D)
+
+```bash
+claude mcp add mcp-guard -- npx -y mcp-guard-scan serve
+```
+
+Other clients read an `mcpServers` block:
+
+```json
+{
+  "mcpServers": {
+    "mcp-guard": { "command": "npx", "args": ["-y", "mcp-guard-scan", "serve"] }
+  }
+}
+```
+
+| Tool                | What it does                                                                                           | Reaches                     |
+| ------------------- | ------------------------------------------------------------------------------------------------------ | --------------------------- |
+| `scan_tools_export` | Every static rule over a `tools/list` result (one server or several, for shadowing)                    | Nothing                     |
+| `scan_server`       | Connects to a Streamable HTTP endpoint, inventories it and runs the static and transport rules         | Public `https://` endpoints |
+| `list_rules`        | The rule catalogue                                                                                     | Nothing                     |
+| `explain_rule`      | One rule: what it detects, bad and good examples, remediation, references                              | Nothing                     |
+| `scan_stdio_server` | Starts a stdio server from a command line and scans it. Only registered with `MCP_GUARD_ALLOW_STDIO=1` | A process on this machine   |
+
+Every scan returns the Markdown report as text and `passed`, `summary`, `servers` and `findings` as structured content. The probe and the LLM judge stay in the CLI: the server never calls the scanned server's tools.
+
+The defaults follow mcp-guard's own rules. A free-form `command` argument is what MCPG-022 flags and an unconstrained `url` is what MCPG-024 flags, so `scan_server` only accepts `https://` and refuses hosts that resolve to loopback, private, link-local or carrier-grade NAT addresses, and starting processes is a separate tool that is off by default. A test scans the server with mcp-guard on every change: it passes clean by default and reports MCPG-022 on itself once `MCP_GUARD_ALLOW_STDIO=1` is set.
+
+| Variable                          | Effect                                                                        |
+| --------------------------------- | ----------------------------------------------------------------------------- |
+| `MCP_GUARD_ALLOW_STDIO`           | `1` adds `scan_stdio_server`. Scanning a stdio server runs its code           |
+| `MCP_GUARD_ALLOW_PRIVATE_NETWORK` | `1` lets `scan_server` reach local and private addresses, and plain `http://` |
+| `LOG_LEVEL`                       | pino level for the logs on stderr (default `warn`)                            |
+
+The address check resolves the host before the scan, and the scan resolves it again, so a DNS rebinding server can still get past it. Run the CLI for anything on your own network.
 
 ## CLI in CI
 

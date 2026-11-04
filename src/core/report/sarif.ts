@@ -43,7 +43,7 @@ export function toSarif(report: ScanReport, cwd = process.cwd()): object {
           driver: {
             name: "mcp-guard",
             semanticVersion: report.scanner.version,
-            informationUri: "https://github.com/diegoperezg7/mcp-guard",
+            informationUri: "https://github.com/diegoperezg7/mcp-guard-scan",
             rules: RULES.map((r) => ({
               id: r.id,
               name: r.name,

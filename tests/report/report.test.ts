@@ -107,7 +107,7 @@ describe("Markdown and table", () => {
     const md = toMarkdown(report());
     expect(md).toContain("## mcp-guard report");
     expect(md).toContain(
-      "[MCPG-002](https://github.com/diegoperezg7/mcp-guard/blob/main/docs/rules.md#mcpg-002)",
+      "[MCPG-002](https://github.com/diegoperezg7/mcp-guard-scan/blob/main/docs/rules.md#mcpg-002)",
     );
     expect(md).toContain("<details>");
     expect(md).not.toMatch(/\| [^|\n]*user \| ever/);

@@ -1,0 +1,48 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.diegoperezg7/mcp-guard-scan",
+  "title": "mcp-guard",
+  "description": "Security scanner for MCP servers: tool poisoning, shadowing, permissions, secrets, transport.",
+  "repository": {
+    "url": "https://github.com/diegoperezg7/mcp-guard-scan",
+    "source": "github"
+  },
+  "version": "1.1.0",
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "mcp-guard-scan",
+      "version": "1.1.0",
+      "transport": {
+        "type": "stdio"
+      },
+      "packageArguments": [
+        {
+          "type": "positional",
+          "value": "serve"
+        }
+      ],
+      "environmentVariables": [
+        {
+          "name": "MCP_GUARD_ALLOW_STDIO",
+          "description": "Set to 1 to add scan_stdio_server, which starts the command it is given",
+          "isRequired": false,
+          "format": "string"
+        },
+        {
+          "name": "MCP_GUARD_ALLOW_PRIVATE_NETWORK",
+          "description": "Set to 1 to let scan_server reach local and private addresses, over http too",
+          "isRequired": false,
+          "format": "string"
+        },
+        {
+          "name": "LOG_LEVEL",
+          "description": "pino log level; logs go to stderr",
+          "isRequired": false,
+          "format": "string",
+          "default": "warn"
+        }
+      ]
+    }
+  ]
+}

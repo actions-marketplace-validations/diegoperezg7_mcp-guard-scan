@@ -1,0 +1,45 @@
+# Publishes a tagged version to npm (with provenance, through trusted publishing)
+# and to the MCP Registry. Push a tag that matches package.json; the GitHub
+# release and the Marketplace listing stay manual, see docs/RELEASING.md.
+# Only full version tags match; moving the major tag (v1) does not publish.
+name: release
+
+on:
+  push:
+    tags: ["v[0-9]+.[0-9]+.[0-9]+"]
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment: release
+    permissions:
+      id-token: write # npm trusted publishing and MCP Registry login
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          registry-url: https://registry.npmjs.org
+
+      - name: Use an npm that supports trusted publishing
+        run: npm install -g npm@11
+
+      - run: npm ci
+      # The HTML report tests open it in a real browser.
+      - run: npx playwright install --with-deps chromium
+      - run: npm run check
+      - run: node scripts/check-versions.mjs "${GITHUB_REF_NAME#v}"
+
+      - run: npm publish --access public
+
+      - name: Publish to the MCP Registry
+        run: |
+          curl -fsSL https://github.com/modelcontextprotocol/registry/releases/download/v1.8.6/mcp-publisher_linux_amd64.tar.gz | tar xz mcp-publisher
+          ./mcp-publisher login github-oidc
+          ./mcp-publisher publish
